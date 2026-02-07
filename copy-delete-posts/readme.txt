@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages
 Requires at least: 4.6
-Tested up to: 6.6.2
-Stable tag: 1.4.9
+Tested up to: 6.9.1
+Stable tag: 1.5.1
 License: GPLv3
 Requires PHP: 5.6
 
@@ -177,6 +177,21 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 
 == Changelog ==
 
+= 1.5.1 =
+* Added option to take over the original slug when copying posts (original gets "-old" suffix)
+* Added option to remove all plugin settings upon uninstallation
+* [PRO] Improved license activation flow with automatic activation
+* Fixed typo in MyPopups banner URL
+* Improved backwards compatibility for taxonomy settings
+* Updated slug option description with link to additional settings
+* Improved option descriptions for better clarity
+* Added disabled button styling for better UX
+* Tested up to WordPress 6.9.1
+
+= 1.5.0 =
+* Fixed issues with mailpoet
+* Tested with WP 6.8
+
 = 1.4.9 =
 * Removed optimization logs for users to prevent performance optimizations of the plugin in future
 * [PRO] Improved cross-site duplication of posts
@@ -275,33 +290,20 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 = 1.3.4 =
 * Improved premium plugin performance
 * Tested with final WordPress 6.1 version
+* [... and more ...]
 
-= 1.3.3 =
-* Tested with WordPress 6.1-RC5 + Multisite
-* Fully tested on PHP 7.4, 8.0, 8.1
-* Removed function that could cause conflicts
-
-= 1.3.2 =
-* NEW: Added automatic creation of non-existing categories for subsite duplication
-* Fixed issues with assigning taxonomy on new posts
-* Resolved issues with featured image duplication between sites
-* Tested with WordPress 6.0.2 + Multisite (PHP 8)
-
-= 1.3.1 =
-* Version fully tested with WordPress 6.0.1 + Multisite
-* Removed unnecessary debug code
-* Fixed issues with falsive attachment duplication
-* Fixed issue inside tooltip while redirect to edit screen option was enabled
-* Fixed issue while during duplication notice "Please select settings" appeared
-* Fixed issue with multi-post duplication to different subsite
-* Fixed post type restrictions, copy option won't appear in dropdown while copying is forbidden
-* Fixed corner cases where copy action button was not displayed in subsites
-* Fixed issues with backslashes and unicode characters - they should copied correctly now
-* Default WordPress Posts and Pages are not longer treated as custom posts
-[AND MORE]
+= previous =
+Old changelog has been removed due to WordPress limitation of 5000 characters.
 
 == Upgrade Notice ==
-= 1.4.9 =
-What's new in 1.4.9?
-* Removed optimization logs for users to prevent performance optimizations of the plugin in future
-* [PRO] Improved cross-site duplication of posts
+= 1.5.1 =
+What's new in 1.5.1?
+* Added option to take over the original slug when copying posts (original gets "-old" suffix)
+* Added option to remove all plugin settings upon uninstallation
+* [PRO] Improved license activation flow with automatic activation
+* Fixed typo in MyPopups banner URL
+* Improved backwards compatibility for taxonomy settings
+* Updated slug option description with link to additional settings
+* Improved option descriptions for better clarity
+* Added disabled button styling for better UX
+* Tested up to WordPress 6.9.1
