@@ -141,8 +141,8 @@ $bmiPremium = 'https://backupbliss.com';
     <div class="bmi-banner__footer-text">
     </div>
     <div>
-      <button class="bmi-banner__cta-button redirect-to-bmi" style="display: none;">Try it out</button>
       <div class="install-now-wrapper">
+        <button class="bmi-banner__cta-button redirect-to-bmi" style="display: none;">Try it out</button>
         <button class="bmi-banner__cta-button install-bmi" style="display: none;">Install it now</button>
         <span class="install-now-text"> (from <a href="https://wordpress.org/plugins/backup-backup/" target="_blank"
             class="bmi-links">WP directory</a>)</span>

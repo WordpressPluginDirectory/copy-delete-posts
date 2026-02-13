@@ -3,7 +3,7 @@ Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages
 Requires at least: 4.6
 Tested up to: 6.9.1
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv3
 Requires PHP: 5.6
 
@@ -177,6 +177,12 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 
 == Changelog ==
 
+= 1.5.2 =
+* [FEATURE] Expanded BackupBliss banner visibility to additional sites (a–e range).
+* [FIX] Updated banner dismiss function to support callback handling and improved redirect timing.
+* [FIX] Adjusted admin_init action priority for better execution order and stability.
+* [FIX] Removed version mismatch option after initialization to prevent stale state issues.
+
 = 1.5.1 =
 * Added option to take over the original slug when copying posts (original gets "-old" suffix)
 * Added option to remove all plugin settings upon uninstallation
@@ -285,25 +291,15 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 
 = 1.3.5 =
 * Added black-friday theme (only for that period)
-* Tested up to WordPress 6.1.1
-
-= 1.3.4 =
-* Improved premium plugin performance
-* Tested with final WordPress 6.1 version
 * [... and more ...]
 
 = previous =
 Old changelog has been removed due to WordPress limitation of 5000 characters.
 
 == Upgrade Notice ==
-= 1.5.1 =
-What's new in 1.5.1?
-* Added option to take over the original slug when copying posts (original gets "-old" suffix)
-* Added option to remove all plugin settings upon uninstallation
-* [PRO] Improved license activation flow with automatic activation
-* Fixed typo in MyPopups banner URL
-* Improved backwards compatibility for taxonomy settings
-* Updated slug option description with link to additional settings
-* Improved option descriptions for better clarity
-* Added disabled button styling for better UX
-* Tested up to WordPress 6.9.1
+= 1.5.2 =
+What's new in 1.5.2?
+* [FEATURE] Expanded BackupBliss banner visibility to additional sites (a–e range).
+* [FIX] Updated banner dismiss function to support callback handling and improved redirect timing.
+* [FIX] Adjusted admin_init action priority for better execution order and stability.
+* [FIX] Removed version mismatch option after initialization to prevent stale state issues.

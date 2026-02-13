@@ -65,11 +65,12 @@
       try { if (typeof res === 'string') res = JSON.parse(res); } catch (e) { }
       setRedirecting($btn);
       const target = res && res.success && res.data && res.data.redirect ? res.data.redirect : 'admin.php?page=backup-migration';
-      dismiss_new_bb_banner();
-      setTimeout(function () { safeRedirect(target); }, 300);
+      dismiss_new_bb_banner(function () {
+        safeRedirect(target);
+      });
     }).fail(function () {
       setRedirecting($btn);
-      setTimeout(function () { safeRedirect('admin.php?page=backup-migration'); }, 300);
+      setTimeout(function () { safeRedirect('admin.php?page=backup-migration'); }, 500);
     });
   });
 
@@ -87,28 +88,39 @@
       try { if (typeof res === 'string') res = JSON.parse(res); } catch (e) { }
       setRedirecting($btn);
       const target = res && res.success && res.data && res.data.redirect ? res.data.redirect : 'admin.php?page=backup-migration';
-      dismiss_new_bb_banner();
-      setTimeout(function () { safeRedirect(target); }, 300);
+      dismiss_new_bb_banner(function () {
+        safeRedirect(target);
+      });
+      setTimeout(function () { safeRedirect(target); }, 500);
     }).fail(function () {
       setRedirecting($btn);
-      setTimeout(function () { safeRedirect('admin.php?page=backup-migration'); }, 300);
+      setTimeout(function () { safeRedirect('admin.php?page=backup-migration'); }, 500);
     });
   });
 
   $('.bmi-banner__dismiss-link, .bmi-banner__close').on('click', dismiss_new_bb_banner);
 
-  function dismiss_new_bb_banner(e) {
-    if (e) e.preventDefault();
-    
+  function dismiss_new_bb_banner(e, callback) {
+    if (typeof e === 'function') {
+      callback = e;
+      e = null;
+    }
+
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }    
     $.post(ajaxurl, {
       action: 'dismiss_new_bb_banner',
       nonce: nonce,
       token: 'new_bb_banner'
     }).done(function (res) {
+      banner_hide();
+      if (callback) callback();
     }).fail(function (err) {
       console.error(err);
+      banner_hide();
+      if (callback) callback();
     });
-    banner_hide();
   }
 
 })(jQuery);
