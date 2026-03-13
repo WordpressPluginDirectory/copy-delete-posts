@@ -3,7 +3,7 @@ Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages
 Requires at least: 4.6
 Tested up to: 6.9.1
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv3
 Requires PHP: 5.6
 
@@ -177,6 +177,9 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 
 == Changelog ==
 
+= 1.5.3 =
+* [FEATURE] Add dual storage backend with file-based fallback
+
 = 1.5.2 =
 * [FEATURE] Expanded BackupBliss banner visibility to additional sites (a–e range).
 * [FIX] Updated banner dismiss function to support callback handling and improved redirect timing.
@@ -284,22 +287,12 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 = 1.3.7 =
 * Included new module
 * Fixed issues with deactivation feedback
-* Corrected display of arrow
-
-= 1.3.6 =
-* Adjusted PHP compatibility
-
-= 1.3.5 =
-* Added black-friday theme (only for that period)
 * [... and more ...]
 
 = previous =
 Old changelog has been removed due to WordPress limitation of 5000 characters.
 
 == Upgrade Notice ==
-= 1.5.2 =
-What's new in 1.5.2?
-* [FEATURE] Expanded BackupBliss banner visibility to additional sites (a–e range).
-* [FIX] Updated banner dismiss function to support callback handling and improved redirect timing.
-* [FIX] Adjusted admin_init action priority for better execution order and stability.
-* [FIX] Removed version mismatch option after initialization to prevent stale state issues.
+= 1.5.3 =
+What's new in 1.5.3?
+* [FEATURE] Add dual storage backend with file-based fallback

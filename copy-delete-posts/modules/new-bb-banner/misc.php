@@ -193,7 +193,7 @@
           $site_url = str_replace('https://', '', $site_url);
           $site_url = str_replace('www.', '', $site_url);
 
-          if (preg_match('/^[a-e]/i', $site_url) && $elapsed_time > $this->showBannerAfter && $this->is_bmi_exists == false) {
+          if ($elapsed_time > $this->showBannerAfter && $this->is_bmi_exists == false) {
             return true;
           }
 
