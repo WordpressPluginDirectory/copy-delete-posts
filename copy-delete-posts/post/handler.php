@@ -307,6 +307,21 @@ function cdp_insert_new_post($areWePro = false) {
     // Get ID(s) of post(s)
     $ids = ((isset($_POST['id'])) ? cdp_sanitize_array($_POST['id']) : false);
 
+    if (is_array($ids)) {
+        $allowed_ids = array();
+        foreach ($ids as $id) {
+            if (current_user_can('read_post', $id) && (post_password_required($id) == false || current_user_can('edit_post', $id))) {
+                $allowed_ids[] = $id;
+            }
+        }
+        $ids = $allowed_ids;
+    }
+
+    if (empty($ids)) {
+        echo json_encode(array('status' => 'error', 'message' => __('Copy not authorized for this post(s).','copy-delete-posts')));
+        exit;
+    }
+
     // Get all important pieces of information from requester
     $data = ((isset($_POST['data'])) ? cdp_sanitize_array($_POST['data']) : false);
     $times = isset($_POST['data']['times']) ? sanitize_text_field($_POST['data']['times']) : 1;
@@ -477,8 +492,8 @@ function cdp_insert_new_post($areWePro = false) {
         foreach ($ft as $taxonomyName => $ids) {
           $fixed_categories = cdp_duplicate_categories($ids, $taxonomyName, $site, $areWePro, $post['post_type'], $new['post_type'], true);
           $ft[$taxonomyName] = $fixed_categories['ids'];
-          if ($fixed_categories['taxonomy'] == 'post_tag') $ft_tags = $fixed_categories['ids'];
-          if ($fixed_categories['taxonomy'] == 'category') $ft_categories = $fixed_categories['ids'];
+          if (isset($fixed_categories['taxonomy']) && $fixed_categories['taxonomy'] == 'post_tag') $ft_tags = $fixed_categories['ids'];
+          if (isset($fixed_categories['taxonomy']) && $fixed_categories['taxonomy'] == 'category') $ft_categories = $fixed_categories['ids'];
         }
         
         $new['multisite_taxonomy'] = $ft;
@@ -491,7 +506,7 @@ function cdp_insert_new_post($areWePro = false) {
         // Add optional values of post – depending on settings
         if ($settings['slug']){
             $new['post_name'] = $post['post_name'];
-            if ($globals['others']['cdp-take-over-original-slug'] == 'true') {
+            if (isset($globals['others']['cdp-take-over-original-slug']) && $globals['others']['cdp-take-over-original-slug'] == 'true') {
                 $original_new_slug = $post['post_name'] . '-old';
                 wp_update_post(array(
                     'ID' => $post['ID'],
@@ -513,11 +528,13 @@ function cdp_insert_new_post($areWePro = false) {
           $fixed_categories = array_values(array_unique(array_merge($fixed_categories, $ft_categories)));
           $new['post_category'] = $fixed_categories;
         }
-        if ($settings['post_tag'])
+        if ($settings['post_tag']){
             $tags = array_values(array_unique(array_merge($post['tags_input'], $ft_tags)));
             $new['tags_input'] = $tags;
-        if ($taxonomies != false)
+        }
+        if ($taxonomies != false){
             $new['tax_input'] = $ft;
+        }
 
         // For ACF Fields
         if ($post['post_type'] == 'acf-field') {
@@ -1112,6 +1129,12 @@ function cdp_insert_new_post($areWePro = false) {
     // Main code for this duplication – for each id (post) do whole process
     function cdp_process_ids($ids, $swap, $settings, $times, $site, $areWePro, $g, $isChild = false, $p_ids = null) {
 
+        foreach ($ids as $key => $id) {
+            if (!current_user_can('read_post', $id) || (post_password_required($id) && !current_user_can('edit_post', $id))) {
+                unset($ids[$key]);
+            }
+        }
+
         // Make it clear
         $globals = cdp_default_global_options();
         if ($g != false)
@@ -1346,30 +1369,61 @@ function cdp_get_all_posts() {
     $args = array(
         'numberposts' => -1,
         'post_type' => 'post',
-        'post_status' => 'publish,private,draft,future,pending,inherit,sticky'
+        'post_status' => 'publish,private,draft,future,pending,inherit,sticky',
+        'perm' => 'readable'
     );
 
-    $output['posts'] = get_posts($args);
+    $raw_posts = get_posts($args);
     $args['post_type'] = 'page';
-    $output['pages'] = get_posts($args);
-    $output['custom'] = array();
+    $raw_pages = get_posts($args);
+    $raw_custom = array();
 
     $post_types = get_post_types(array('public' => true, '_builtin' => false));
 
-    if (sizeof($post_types) > 0)
-        $output['custom'] = get_posts(array(
+    if (sizeof($post_types) > 0) {
+        $raw_custom = get_posts(array(
             'post_type' => $post_types,
             'numberposts' => -1,
-            'post_status' => 'publish,private,draft,future,pending,inherit,sticky'
+            'post_status' => 'publish,private,draft,future,pending,inherit,sticky',
+            'perm' => 'readable'
         ));
+    }
 
+    $output['posts'] = array();
+    $output['pages'] = array();
+    $output['custom'] = array();
     $output['meta'] = array();
-    foreach ($output['posts'] as $k => $p)
-        $output['meta'][$p->ID] = get_post_meta($p->ID);
-    foreach ($output['pages'] as $k => $p)
-        $output['meta'][$p->ID] = get_post_meta($p->ID);
-    foreach ($output['custom'] as $k => $p)
-        $output['meta'][$p->ID] = get_post_meta($p->ID);
+
+    $process_posts = function($posts_list) use (&$output) {
+        $filtered = array();
+        foreach ($posts_list as $p) {
+            if (!current_user_can('read_post', $p->ID) || (post_password_required($p) && !current_user_can('edit_post', $p->ID))) {
+                continue;
+            }
+
+            $p->post_password = '';
+            unset($p->post_password);
+
+            $filtered[] = $p;
+
+            $all_meta = get_post_meta($p->ID);
+            $clean_meta = array();
+            if (is_array($all_meta)) {
+                foreach ($all_meta as $key => $val) {
+                    if (is_protected_meta($key, 'post') && strpos($key, '_cdp_') !== 0) {
+                        continue;
+                    }
+                    $clean_meta[$key] = $val;
+                }
+            }
+            $output['meta'][$p->ID] = $clean_meta;
+        }
+        return $filtered;
+    };
+
+    $output['posts'] = $process_posts($raw_posts);
+    $output['pages'] = $process_posts($raw_pages);
+    $output['custom'] = $process_posts($raw_custom);
 
     echo json_encode(cdp_sanitize_array($output));
 }
@@ -1394,6 +1448,22 @@ function cdp_is_elementor_post($post_id) {
  */
 function cdp_delete_posts() {
     $ids = ((isset($_POST['ids'])) ? cdp_sanitize_array($_POST['ids']) : false); // ids to delete
+
+    if (is_array($ids)) {
+        $allowed_ids = array();
+        foreach ($ids as $id) {
+            if (current_user_can('delete_post', $id)) {
+                $allowed_ids[] = $id;
+            }
+        }
+        $ids = $allowed_ids;
+    }
+
+    if (empty($ids)) {
+        echo json_encode(array('status' => 'error', 'message' => __('Delete not authorized for this post(s).','copy-delete-posts')));
+        exit;
+    }
+
     $throttling = sanitize_text_field($_POST['throttling']); // throttling if enabeld
     $thc = sanitize_text_field($_POST['thc']); // throttling count if enabeld
     $thrs = sanitize_text_field($_POST['thrs']) == 'true' ? true : false; // trash or not?
